@@ -1,0 +1,34 @@
+解决n数之和为定值的问题
+private List<List<Integer>> nSumTarget(int[] nums,int n,int start,int target){
+        int sz = nums.length;
+        List<List<Integer>> ans = new ArrayList<>();
+
+        if(n < 2 || sz < n)return ans;
+        if(n == 2){
+            int left = start,right = sz-1;
+            while(left < right){
+                int sum = nums[left]+nums[right];
+                if(sum == target){
+                    ans.add(new ArrayList<>(Arrays.asList(left,right)));
+                    while( left < right && nums[left] == nums[++left]);
+                    while( left < right && nums[right] == nums[--right]);
+                } else if(sum < target){
+                    while(left < right && nums[left] == nums[++left]);
+                } else{
+                    while(left < right && nums[right] == nums[--right]);
+                }
+            }
+        } else{
+            for(int i = start;i<sz;i++){
+                List<List<Integer>> sub = nSumTarget(nums,n-1,i+1,target-nums[i]);
+                for(List<Integer> arr : sub){
+                    arr.add(nums[i]);
+                    ans.add(arr);
+                }
+            }
+        }
+        return ans;
+    }
+
+其中当n == 2时，就用经典的双指针求解
+当n > 2 时，不断的固定 n-2 的其余点，利用递归求解。
