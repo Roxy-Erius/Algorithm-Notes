@@ -1,0 +1,27 @@
+    数组前缀和
+
+
+用途：快速的，频繁的求数组一个区间的和
+
+class PrefixSum {
+    // 前缀和数组
+    private int[] preSum;
+
+    // 输入一个数组，构造前缀和
+    public PrefixSum(int[] nums) {
+        // preSum[0] = 0，便于计算累加和
+        preSum = new int[nums.length + 1];
+        // 计算 nums 的累加和
+        for (int i = 1; i < preSum.length; i++) {
+            preSum[i] = preSum[i - 1] + nums[i - 1];
+        }
+    }
+    
+    // 查询闭区间 [left, right] 的累加和
+    public int sumRange(int left, int right) {
+        return preSum[right + 1] - preSum[left];
+    }
+}
+
+https://leetcode.cn/problems/range-sum-query-immutable/   力扣一维数组前缀和应用
+https://leetcode.cn/problems/range-sum-query-2d-immutable/  力扣二维数组前缀和应用
