@@ -1,0 +1,64 @@
+单调栈
+
+模板：
+
+找下一个更大的元素
+int[] calculateGreaterElement(int[] nums) {
+    int n = nums.length;
+    // 存放答案的数组
+    int[] res = new int[n];
+    Stack<Integer> s = new Stack<>(); 
+    // 倒着往栈里放
+    for (int i = n - 1; i >= 0; i--) {
+        // 判定个子高矮
+        while (!s.isEmpty() && s.peek() <= nums[i]) {
+            // 矮个起开，反正也被挡着了。。。
+            s.pop();
+        }
+        // nums[i] 身后的更大元素
+        res[i] = s.isEmpty() ? -1 : s.peek();
+        s.push(nums[i]);
+    }
+    return res;
+}
+
+力扣例题：
+  https://leetcode.cn/problems/0ynMMM/description/  柱状图矩形最大面积，其中维护了两次单调栈
+
+注重点：哨兵值，当记录右侧时哨兵值为n，记录左侧时哨兵值为-1
+
+题解：
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int n = heights.length;
+        Deque<Integer> stack = new ArrayDeque<>();
+
+        int[] left = new int[n];
+        int[] right = new int[n];
+
+        //找到右边第一个比当前值小的索引
+        for(int i = n - 1;i >= 0;i--){
+            // 比当前值大的都pop出去
+            while(!stack.isEmpty() && heights[stack.peek()] >= heights[i]){
+                stack.pop();
+            }
+            right[i] = stack.isEmpty() ? n : stack.peek();
+            stack.push(i);
+        }
+        stack.clear();
+        //找到左边第一个比当前值小的索引
+        for(int i = 0;i < n;i++){
+            while(!stack.isEmpty() && heights[stack.peek()] >= heights[i]){
+                stack.pop();
+            }
+            left[i] = stack.isEmpty() ? -1 : stack.peek();
+            stack.push(i);
+        }
+
+        int ans = 0;
+        for(int i =0;i < n;i++){
+            ans = Math.max(ans,(right[i] - left[i] -1)*heights[i]);
+        }
+        return ans;
+    }
+}
